@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: kasclient_form.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: kasclient_form.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>Form
+        //////////////////////////////////
+
+        /////// Creation flow APIs ///////
+
+        //////////////////////////////////
+
+        /**
+
+        * Initializes and returns an empty form object based on the default form file present in the package
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASForm} form can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function initFormAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                KASClient.getJsonFromFileAsync("mock/form.json", function (formJson, error) {
+
+                    if (callback) {
+
+                        callback(KASClient.KASForm.fromJSON(formJson), null);
+
+                    }
+
+                });
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getSurveyJson(function (formJson, error) {
+
+                if (callback) {
+
+                    callback(KASClient.KASForm.fromJSON(formJson), error);
+
+                }
+
+            });
+
+        }
+
+        Form.initFormAsync = initFormAsync;
+
+        /**
+
+        * Submits the newly created form as a request. This results a new conversation card
+
+        * @param {KASForm} form
+
+        */
+
+        function submitFormRequest(form, shouldInflate) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("SubmitFormRequest");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.createRequest(form.toJSON(), null, shouldInflate);
+
+        }
+
+        Form.submitFormRequest = submitFormRequest;
+
+        /**
+
+      * Submits the newly created form as a request. This results a new conversation card
+
+      * @param {KASForm} form
+
+      */
+
+        function submitFormRequestV2(form, shouldDismiss, shouldSendToSubscribers) {
+
+            if (shouldDismiss === void 0) { shouldDismiss = false; }
+
+            if (shouldSendToSubscribers === void 0) { shouldSendToSubscribers = true; }
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("SubmitFormRequest");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.createRequestV2(form.toJSON(), shouldDismiss, shouldSendToSubscribers);
+
+        }
+
+        Form.submitFormRequestV2 = submitFormRequestV2;
+
+        /**
+
+        * Submits the newly created form as a request with responses
+
+        * @param {KASForm} form
+
+        */
+
+        function submitFormRequestWithResponses(form, responses, shouldDismiss, isResponseAnonymous, shouldSendToSubscribers) {
+
+            if (shouldSendToSubscribers === void 0) { shouldSendToSubscribers = true; }
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("submitFormRequestWithResponses");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.createRequestWithResponses(form.toJSON(), responses, shouldDismiss, isResponseAnonymous, shouldSendToSubscribers);
+
+        }
+
+        Form.submitFormRequestWithResponses = submitFormRequestWithResponses;
+
+        /**
+
+        * Submits the newly created form as a request. This results a new conversation card
+
+        * @param {KASForm} form
+
+        */
+
+        function submitFormRequestWithoutDismiss(form, shouldInflate) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("submitFormRequestWithoutDismiss");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.createRequest(form.toJSON(), null, shouldInflate, false);
+
+        }
+
+        Form.submitFormRequestWithoutDismiss = submitFormRequestWithoutDismiss;
+
+        /**
+
+        * use for making changes in form fields like title, description and settings.
+
+        */
+
+        function updateForm(fields, shouldInflate, callback) {
+
+            if (KASClient.shouldMockData()) {
+
+                alert("updateForm");
+
+                return;
+
+            }
+
+            KASClient.updateRequest(fields, null, shouldInflate, function (success, error) {
+
+                if (callback) {
+
+                    callback(success &amp;&amp; error == null);
+
+                }
+
+            });
+
+        }
+
+        Form.updateForm = updateForm;
+
+        //////////////////////////////////
+
+        /////// Response flow APIs ///////
+
+        //////////////////////////////////
+
+        /**
+
+        * Gets whether the current user can respond to the form
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {boolean} canRespond true if current user is allowed to respond
+
+        */
+
+        function canRespondToFormAsync(callback) {
+
+            KASClient.canRespondToSurvey(function (canRespond, error) {
+
+                if (callback) {
+
+                    callback(canRespond &amp;&amp; error == null);
+
+                }
+
+            });
+
+        }
+
+        Form.canRespondToFormAsync = canRespondToFormAsync;
+
+        /**
+
+        * Gets the form object associated with the conversation card
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASForm} form can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getFormAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                KASClient.getJsonFromFileAsync("mock/form.json", function (formJson, error) {
+
+                    if (callback) {
+
+                        callback(KASClient.KASForm.fromJSON(formJson), null);
+
+                    }
+
+                });
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getSurveyJson(function (formJson, error) {
+
+                if (callback) {
+
+                    callback(KASClient.KASForm.fromJSON(formJson), error);
+
+                }
+
+            });
+
+        }
+
+        Form.getFormAsync = getFormAsync;
+
+        /**
+
+        * Gets the status of the form associated with the conversation card
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {boolean} isActive true if the form is not yet expired
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getFormStatusAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                if (callback) {
+
+                    callback(true, null);
+
+                }
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getPollStatus(function (isActive, error) {
+
+                if (callback) {
+
+                    callback(isActive, error);
+
+                }
+
+            });
+
+        }
+
+        Form.getFormStatusAsync = getFormStatusAsync;
+
+        /**
+
+        * Gets all the responses of the current user against the form
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormResponse[]} responses can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getMyFormResponsesAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                KASClient.getJsonFromFileAsync("mock/form_response.json", function (responsesJson, error) {
+
+                    var responses = [];
+
+                    for (var i in responsesJson) {
+
+                        responses.push(KASClient.KASFormResponse.fromJSON(responsesJson[i]));
+
+                    }
+
+                    if (callback) {
+
+                        callback(responses, null);
+
+                    }
+
+                });
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getResponsesJson(function (responsesJson, error) {
+
+                var responses = [];
+
+                for (var i in responsesJson) {
+
+                    responses.push(KASClient.KASFormResponse.fromJSON(responsesJson[i]));
+
+                }
+
+                if (callback) {
+
+                    callback(responses, error);
+
+                }
+
+            });
+
+        }
+
+        Form.getMyFormResponsesAsync = getMyFormResponsesAsync;
+
+        /**
+
+        * Gets all the responses of the current user against the form
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormResponse[]} responses can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getBatchResponsesAsync(offset, batchSize, callback) {
+
+            if (offset === void 0) { offset = 0; }
+
+            if (batchSize === void 0) { batchSize = 100; }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getBatchResponsesJson(offset, batchSize, function (responsesJson, error) {
+
+                var responses = [];
+
+                for (var i in responsesJson) {
+
+                    responses.push(KASClient.KASFormResponse.fromJSON(responsesJson[i]));
+
+                }
+
+                if (callback) {
+
+                    callback(responses, error);
+
+                }
+
+            });
+
+        }
+
+        Form.getBatchResponsesAsync = getBatchResponsesAsync;
+
+        /**
+
+        * Gets all the responses of the current form for given time range
+
+        * @param {number} startTime start timestamp of time range
+
+        * @param {number} endTime end timestamp of time range
+
+        * @param {string} userId for which response will be fetched. Should be empty to fetch responses of whole survey.
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormResponse[]} responses of the survey for given userId.
+
+        */
+
+        function getResponsesForTimeRangeAsync(startTime, endTime, userId, callback) {
+
+            KASClient.getResponsesForTimeRange(startTime, endTime, userId, function (responsesArray, error) {
+
+                var responses = [];
+
+                for (var i in responsesArray) {
+
+                    responses.push(KASClient.KASFormResponse.fromJSON(responsesArray[i]));
+
+                }
+
+                if (callback) {
+
+                    callback(responses, error);
+
+                }
+
+            });
+
+        }
+
+        Form.getResponsesForTimeRangeAsync = getResponsesForTimeRangeAsync;
+
+        /**
+
+        * Submits a new response against the form associated with the conversation card
+
+        * This will dismiss the current screen
+
+        * @param {JSON} questionToAnswerMap question id to answer mapping
+
+        * @param {string} responseId to be filled if the current response is an edit/update to a previous one
+
+        * @param {boolean} isEdit denotes if the current response is an edit/update to a previous one
+
+        * @param {boolean} showInChatCanvas denotes if a separate chat card needs to be created for this response or not
+
+        * @param {boolean} isAnonymous denotes if the response should be registered as anonymous or not
+
+        */
+
+        function sumbitFormResponse(questionToAnswerMap, responseId, isEdit, showInChatCanvas, isAnonymous) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("SumbitFormResponse");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.sendResponse(questionToAnswerMap, responseId, isEdit, showInChatCanvas, isAnonymous);
+
+        }
+
+        Form.sumbitFormResponse = sumbitFormResponse;
+
+        /**
+
+        * Submits a new response against the form associated with the conversation card
+
+        * This won't dismiss the current screen
+
+        * @param {JSON} questionToAnswerMap question id to answer mapping
+
+        * @param {string} responseId to be filled if the current response is an edit/update to a previous one
+
+        * @param {boolean} isEdit denotes if the current response is an edit/update to a previous one
+
+        * @param {boolean} showInChatCanvas denotes if a separate chat card needs to be created for this response or not
+
+        * @param {boolean} isAnonymous denotes if the response should be registered as anonymous or not
+
+        */
+
+        function sumbitFormResponseWithoutDismiss(questionToAnswerMap, responseId, isEdit, showInChatCanvas, isAnonymous) {
+
+            KASClient.sendResponse(questionToAnswerMap, responseId, isEdit, showInChatCanvas, isAnonymous, false);
+
+        }
+
+        Form.sumbitFormResponseWithoutDismiss = sumbitFormResponseWithoutDismiss;
+
+        /**
+
+        * Submits a new response against the form associated with the conversation card
+
+        * This won't dismiss the current screen
+
+        * @param {KASFormBatchResponseUnit[]} responses question id to answer mapping
+
+        * @param {boolean} showInChatCanvas denotes if a separate chat card needs to be created for this response or not
+
+        * @param {boolean} isAnonymous denotes if the response should be registered as anonymous or not
+
+        * @param {boolean} shouldDismis denotes the current screen will dismiss or not
+
+        */
+
+        function sumbitBatchFormResponse(responses, showInChatCanvas, isAnonymous, shouldDismiss) {
+
+            if (shouldDismiss === void 0) { shouldDismiss = true; }
+
+            var responsesJson = [];
+
+            for (var i = 0; i &lt; responses.length; i++) {
+
+                responsesJson.push(responses[i].toJSON());
+
+            }
+
+            KASClient.sendBatchResponse(responsesJson, showInChatCanvas, isAnonymous, shouldDismiss);
+
+        }
+
+        Form.sumbitBatchFormResponse = sumbitBatchFormResponse;
+
+        /////////////////////////////////
+
+        /////// Summary flow APIs ///////
+
+        /////////////////////////////////
+
+        /**
+
+        * Gets whether the form summary is visible to the current user
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {boolean} shouldSeeSummary true if current user is allowed to see summary
+
+        */
+
+        function shouldSeeFormSummaryAsync(callback) {
+
+            KASClient.shouldSeeSurveySummary(function (shouldSeeSummary, error) {
+
+                if (callback) {
+
+                    callback(shouldSeeSummary &amp;&amp; error == null);
+
+                }
+
+            });
+
+        }
+
+        Form.shouldSeeFormSummaryAsync = shouldSeeFormSummaryAsync;
+
+        /**
+
+        * Gets form permissions
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormUserCapabilities} permissions
+
+        */
+
+        function getFormUserCapabilitiesAsync(callback) {
+
+            KASClient.getFormUserCapabilities(function (formJson, error) {
+
+                if (callback) {
+
+                    callback(KASClient.KASFormUserCapabilities.fromJSON(formJson), error);
+
+                }
+
+            });
+
+        }
+
+        Form.getFormUserCapabilitiesAsync = getFormUserCapabilitiesAsync;
+
+        /**
+
+        * Gets whether the current user is subscriber or not
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {boolean} isSubscribed true if current user subscriber
+
+        */
+
+        function isSubscribed(callback) {
+
+            KASClient.isSubscriber(function (isSubscribed, error) {
+
+                if (callback) {
+
+                    callback(isSubscribed &amp;&amp; error == null);
+
+                }
+
+            });
+
+        }
+
+        Form.isSubscribed = isSubscribed;
+
+        /**
+
+        * Gets flat responses by all the users, and processed summary from all the responses associated
+
+        * with the form. It requires two callbacks:
+
+        * @param {Callback} mostUpdatedCallback to immediately get the most updated summary from local database. It has below parameters:
+
+        * * * * @param {KASFormFlatSummary} flatSummary can be null in case of error
+
+        * * * * @param {KASFormProcessedSummary} processedSummary can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        * @param {Callback} notifyCallback to get notified with the latest summary fetched from server. It has below parameters:
+
+        * * * * @param {KASFormFlatSummary} flatSummary can be null in case of error
+
+        * * * * @param {KASFormProcessedSummary} processedSummary can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        *
+
+        * This is useful when the network is flaky/disconnected, so that summary can
+
+        * immediately be shown with the present data we have, but with an option to refresh
+
+        * it later on arrival of latest data from server! None of the callbacks are mandatory,
+
+        * so if 1st is nil, this method can be used to always fetch summary from server, and
+
+        * if 2nd is nil, this can be used to always fetch summary from local database!
+
+        */
+
+        function getFormSummaryAsync(mostUpdatedCallback, notifyCallback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                KASClient.getJsonFromFileAsync("mock/form_summary.json", function (summaryJson, error) {
+
+                    KASClient.getJsonFromFileAsync("mock/form_result.json", function (summaryResultJson, error) {
+
+                        if (mostUpdatedCallback) {
+
+                            mostUpdatedCallback(KASClient.KASFormFlatSummary.fromJSON(summaryJson, true), KASClient.KASFormProcessedSummary.fromJSON(summaryResultJson), null);
+
+                        }
+
+                    });
+
+                });
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            getFormAsync(function (form, error) {
+
+                if (error == null) {
+
+                    var callback1 = null;
+
+                    if (mostUpdatedCallback) {
+
+                        callback1 = function (summaryJson, summaryResultJson, error) {
+
+                            mostUpdatedCallback(KASClient.KASFormFlatSummary.fromJSON(summaryJson, form.isResponseAppended), KASClient.KASFormProcessedSummary.fromJSON(summaryResultJson), error);
+
+                        };
+
+                    }
+
+                    var callback2 = null;
+
+                    if (notifyCallback) {
+
+                        callback2 = function (summaryJson, summaryResultJson, error) {
+
+                            notifyCallback(KASClient.KASFormFlatSummary.fromJSON(summaryJson, form.isResponseAppended), KASClient.KASFormProcessedSummary.fromJSON(summaryResultJson), error);
+
+                        };
+
+                    }
+
+                    KASClient.getSurveySummary(callback1, callback2);
+
+                }
+
+                else {
+
+                    if (mostUpdatedCallback) {
+
+                        mostUpdatedCallback(null, null, error);
+
+                    }
+
+                }
+
+            });
+
+        }
+
+        Form.getFormSummaryAsync = getFormSummaryAsync;
+
+        /**
+
+        * Gets flat responses by all the users associated with the form (It is advised to use getFormSummary() instead of this)
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormFlatSummary} flatSummary can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getFlatFormSummaryAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                KASClient.getJsonFromFileAsync("mock/form_summary.json", function (summaryJson, error) {
+
+                    if (callback) {
+
+                        callback(KASClient.KASFormFlatSummary.fromJSON(summaryJson, true), null);
+
+                    }
+
+                });
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            getFormAsync(function (form, error) {
+
+                if (error == null) {
+
+                    KASClient.getSurveySummaryJson(function (summaryJson, error) {
+
+                        if (callback) {
+
+                            callback(KASClient.KASFormFlatSummary.fromJSON(summaryJson, form.isResponseAppended), error);
+
+                        }
+
+                    });
+
+                }
+
+                else {
+
+                    if (callback) {
+
+                        callback(null, error);
+
+                    }
+
+                }
+
+            });
+
+        }
+
+        Form.getFlatFormSummaryAsync = getFlatFormSummaryAsync;
+
+        /**
+
+        * Gets processed summary from all the responses associated with the form (It is advised to use getFormSummary() instead of this)
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormProcessedSummary} processedSummary can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getProcessedFormSummaryAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                KASClient.getJsonFromFileAsync("mock/form_result.json", function (summaryResultJson, error) {
+
+                    if (callback) {
+
+                        callback(KASClient.KASFormProcessedSummary.fromJSON(summaryResultJson), null);
+
+                    }
+
+                });
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getSurveyResultJson(function (summaryResultJson, error) {
+
+                if (callback) {
+
+                    callback(KASClient.KASFormProcessedSummary.fromJSON(summaryResultJson), error);
+
+                }
+
+            });
+
+        }
+
+        Form.getProcessedFormSummaryAsync = getProcessedFormSummaryAsync;
+
+        /**
+
+        * Gets aggregated summary from all the responses associated with the form
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormAggregatedSummary} aggregatedSummary can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getAggregatedFormSummaryAsync(callback) {
+
+            getFormAsync(function (form, error) {
+
+                KASClient.getSurveyAggregatedSummaryJson(function (summaryJson, error) {
+
+                    if (callback) {
+
+                        callback(KASClient.KASFormAggregatedSummary.fromJSON(summaryJson, form.questions), error);
+
+                    }
+
+                });
+
+            });
+
+        }
+
+        Form.getAggregatedFormSummaryAsync = getAggregatedFormSummaryAsync;
+
+        /**
+
+        * Gets the file url from server containing flat responses associated with the form
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {string} url can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getFormURLAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                if (callback) {
+
+                    callback("https://www.kaizala.dummyurl", null);
+
+                }
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getSurveyURL(function (url, error) {
+
+                if (callback) {
+
+                    callback(url, error);
+
+                }
+
+            });
+
+        }
+
+        Form.getFormURLAsync = getFormURLAsync;
+
+        /**
+
+        * Launches native share screen for the form url
+
+        * @param {string} url to be shared
+
+        */
+
+        function shareFormURL(url) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("ShareFormURL");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.shareSurveyURL(url);
+
+        }
+
+        Form.shareFormURL = shareFormURL;
+
+        /**
+
+        * Gets the consolidated reaction (likes and comments) of the conversation card associated with the form
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {KASFormReaction} reaction can be null in case of error
+
+        * * * * @param {string} error message in case of error, null otherwise
+
+        */
+
+        function getFormReactionAsync(callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                KASClient.getJsonFromFileAsync("mock/form_reaction.json", function (reactionJson, error) {
+
+                    if (callback) {
+
+                        callback(KASClient.KASFormReaction.fromJSON(reactionJson), null);
+
+                    }
+
+                });
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.getSurveyLikesAndComments(function (reactionJson, error) {
+
+                if (callback) {
+
+                    callback(KASClient.KASFormReaction.fromJSON(reactionJson), error);
+
+                }
+
+            });
+
+        }
+
+        Form.getFormReactionAsync = getFormReactionAsync;
+
+        /**
+
+        * Shows all the reaction screen (likes and comments) against the form
+
+        */
+
+        function showAllReactions(showComments) {
+
+            if (showComments === void 0) { showComments = true; }
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("ShowAllReactions");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.showLikesAndCommentsPage(showComments);
+
+        }
+
+        Form.showAllReactions = showAllReactions;
+
+        /**
+
+        * Requests to add a like count to a form, the count may decrease if the current user has already liked the form
+
+        */
+
+        function likeForm() {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("LikeForm");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.likeSurvey();
+
+        }
+
+        Form.likeForm = likeForm;
+
+        /**
+
+        * Requests to add a comment to a form
+
+        */
+
+        function addCommentOnForm(comment) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("CommentForm: " + comment);
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.addCommentOnSurvey(comment);
+
+        }
+
+        Form.addCommentOnForm = addCommentOnForm;
+
+        /**
+
+        * Requests to add a response to a form, by launching response screen
+
+        */
+
+        function respondToForm() {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("RespondToForm");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.respondToSurvey();
+
+        }
+
+        Form.respondToForm = respondToForm;
+
+        /**
+
+        * Sends a reminder (a new conversation card) against the existing card
+
+        */
+
+        function sendRemindersToRespond() {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("SendRemindersToRespond");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.sendReminder();
+
+        }
+
+        Form.sendRemindersToRespond = sendRemindersToRespond;
+
+        /**
+
+        * Launches the conversation picker to forward a copy of the existing form as a new conversation card
+
+        */
+
+        function copyFormAndForward() {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("CopyFormAndForward");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.forwardSurvey();
+
+        }
+
+        Form.copyFormAndForward = copyFormAndForward;
+
+        /**
+
+        * Closes the form associated with the card, no responses will be allowed further
+
+        */
+
+        function closeForm() {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("CloseForm");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.closeCard();
+
+        }
+
+        Form.closeForm = closeForm;
+
+        /**
+
+        * Editing the form associated with the card.
+
+        */
+
+        function showEditFormPage() {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("EditForm");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.editCard();
+
+        }
+
+        Form.showEditFormPage = showEditFormPage;
+
+        /**
+
+        * Post a request to update the properties associated with the form
+
+        * @param {KASFormPropertyUpdateInfo[]} propertyUpdates an array of all update infos that are needed to be performed, update infos can be created using KASFormPropertyUpdateFactory
+
+        * @param {string[]} notifyUsers send push notifications to these user ids regarding this update
+
+        * @param {string} notificationMessage push notification message
+
+        * @param {Callback} callback with below parameters:
+
+        * * * * @param {boolean} success indicates if the update is successful or not
+
+        */
+
+        function updateFormPropertiesAsync(propertyUpdates, notifyUsers, notificationMessage, callback) {
+
+            var updates = [];
+
+            for (var i = 0; i &lt; propertyUpdates.length; i++) {
+
+                var propertyUpdate = propertyUpdates[i];
+
+                updates.push(propertyUpdate.toJSON());
+
+            }
+
+            KASClient.updateSurveyMetadata([JSON.stringify(updates), JSON.stringify(notifyUsers), notificationMessage], function (success, error) {
+
+                if (callback) {
+
+                    callback(success &amp;&amp; error == null);
+
+                }
+
+            });
+
+        }
+
+        Form.updateFormPropertiesAsync = updateFormPropertiesAsync;
+
+        /**
+
+          * Requests to send push notification to a particular set of users with a custom message
+
+          * @param {CustomNotificationMessage} customNotificationMessage list of userIds to whom the notification has to be sent
+
+          * @param {Callback} callback with below parameters:
+
+          * * * * @param {boolean} success indicates if the update is successful or not
+
+          * * * * @param {string} error message in case of error, null otherwise
+
+          */
+
+        function sendNotificationToUsers(customNotificationMessage, callback) {
+
+            //////////// MOCK ////////////
+
+            if (KASClient.shouldMockData()) {
+
+                alert("sendNotificationToUsers");
+
+                return;
+
+            }
+
+            //////////// ACTUAL ////////////
+
+            KASClient.sendNotification(JSON.stringify(customNotificationMessage.toJSON()), function (success, error) {
+
+                if (callback) {
+
+                    callback(success &amp;&amp; error == null);
+
+                }
+
+            });
+
+        }
+
+        Form.sendNotificationToUsers = sendNotificationToUsers;
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addCommentOnForm">addCommentOnForm</a></li><li><a href="global.html#canRespondToFormAsync">canRespondToFormAsync</a></li><li><a href="global.html#closeForm">closeForm</a></li><li><a href="global.html#copyFormAndForward">copyFormAndForward</a></li><li><a href="global.html#getAggregatedFormSummaryAsync">getAggregatedFormSummaryAsync</a></li><li><a href="global.html#getBatchResponsesAsync">getBatchResponsesAsync</a></li><li><a href="global.html#getFlatFormSummaryAsync">getFlatFormSummaryAsync</a></li><li><a href="global.html#getFormAsync">getFormAsync</a></li><li><a href="global.html#getFormReactionAsync">getFormReactionAsync</a></li><li><a href="global.html#getFormStatusAsync">getFormStatusAsync</a></li><li><a href="global.html#getFormSummaryAsync">getFormSummaryAsync</a></li><li><a href="global.html#getFormURLAsync">getFormURLAsync</a></li><li><a href="global.html#getFormUserCapabilitiesAsync">getFormUserCapabilitiesAsync</a></li><li><a href="global.html#getMyFormResponsesAsync">getMyFormResponsesAsync</a></li><li><a href="global.html#getProcessedFormSummaryAsync">getProcessedFormSummaryAsync</a></li><li><a href="global.html#getResponsesForTimeRangeAsync">getResponsesForTimeRangeAsync</a></li><li><a href="global.html#initFormAsync">initFormAsync</a></li><li><a href="global.html#isSubscribed">isSubscribed</a></li><li><a href="global.html#likeForm">likeForm</a></li><li><a href="global.html#respondToForm">respondToForm</a></li><li><a href="global.html#sendNotificationToUsers">sendNotificationToUsers</a></li><li><a href="global.html#sendRemindersToRespond">sendRemindersToRespond</a></li><li><a href="global.html#shareFormURL">shareFormURL</a></li><li><a href="global.html#shouldSeeFormSummaryAsync">shouldSeeFormSummaryAsync</a></li><li><a href="global.html#showAllReactions">showAllReactions</a></li><li><a href="global.html#showEditFormPage">showEditFormPage</a></li><li><a href="global.html#submitFormRequest">submitFormRequest</a></li><li><a href="global.html#submitFormRequestV2">submitFormRequestV2</a></li><li><a href="global.html#submitFormRequestWithoutDismiss">submitFormRequestWithoutDismiss</a></li><li><a href="global.html#submitFormRequestWithResponses">submitFormRequestWithResponses</a></li><li><a href="global.html#sumbitBatchFormResponse">sumbitBatchFormResponse</a></li><li><a href="global.html#sumbitFormResponse">sumbitFormResponse</a></li><li><a href="global.html#sumbitFormResponseWithoutDismiss">sumbitFormResponseWithoutDismiss</a></li><li><a href="global.html#updateForm">updateForm</a></li><li><a href="global.html#updateFormPropertiesAsync">updateFormPropertiesAsync</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 14 2018 16:00:15 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
