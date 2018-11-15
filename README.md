@@ -6,6 +6,6 @@
 
 [JSDoc Form documented in markdown](Form)
 
-[JSDoc Form documented in markup](jsdoc/form)
+[JSDoc Form documented in markup](jsdoc/form/index.html)
 
 [JSDoc App documented in markup](jsdoc/app/index.html)
