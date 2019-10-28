@@ -1,11 +1,26 @@
-# documentation-tools
 
-[documentation js - html](documentationjs/index.html)
+![Mobile Engineering Handbook](./res/handbook.png)
 
-[documentation js - md](documentationjs_md)
 
-[JSDoc Form documented in markdown](Form)
+## Local Setup
 
-[JSDoc Form documented in markup](jsdoc/form/index.html)
+### Install Gitbook locally
 
-[JSDoc App documented in markup](jsdoc/app/index.html)
+```
+$ npm install gitbook-cli -g
+```
+
+### Preview
+
+Start the local gitbook server
+
+```
+$ gitbook serve
+```
+
+And check the content at [http://localhost:4000/](http://localhost:4000/)
+
+More details can be found [here](https://github.com/GitbookIO/gitbook/blob/master/docs/setup.md).
+
+
+
